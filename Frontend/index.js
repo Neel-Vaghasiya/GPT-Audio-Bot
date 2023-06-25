@@ -1,8 +1,3 @@
-// Check if mediaRecorder events can be out of the function ---- done
-// Remove all consoles and render it in DOM
-// Make recognition variable global and get it out of the function -----done
-// Get CheckSilence function out of the parent function  -----done
-// Define handleAudioResponse function to reduce repeatation ----- Not required
 
 const mic = document.querySelector('.mic');
 const spokenText = document.getElementById('spokenText');
