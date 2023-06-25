@@ -1,0 +1,74 @@
+
+html,body {
+    background-color: #444654;
+}
+
+.container {
+    padding-top: 5%;
+    height: 100vh;
+    background-color: #5a5d73;
+    color: whitesmoke;
+}
+
+#spokenText {
+    min-height: 40%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.7rem;
+    padding-left: 15%;
+    padding-right: 15%;
+}
+  
+.buttons-container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+.mic {
+    margin-bottom: 5%;
+    bottom: 5px;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 150px;
+    background-color: #27c5f3;
+    color: #fff;
+    font-size: 33px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color .25%;
+}
+
+.mic::before {
+    content: "";
+    position: absolute;
+    width: inherit;
+    height: inherit;
+    border-radius: inherit;
+    background-color: inherit;
+    z-index: -1;
+}
+
+.listening {
+    z-index: 2;
+    background-color: #0da9d9;
+}
+
+.listening::before {
+    animation: listening 1.3s infinite;
+}
+
+@keyframes listening {
+    from {
+        opacity: 0.25;
+    }
+    to {
+        transform: scale(2);
+        opacity: 0;
+    }
+}
