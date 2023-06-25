@@ -22,7 +22,7 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
 
 
     if ('onstart' in recognition && 'onresult' in recognition && 'onend' in recognition && !firefoxAgent) {
-        // isRecognitionSupported = true;
+        isRecognitionSupported = true;
     }
 }
 
@@ -87,16 +87,14 @@ async function sendTextToServer(query) {
                         // Convert the audio chunk to a Blob
                         const audioChunk = new Blob([value], { type: 'audio/webm' });
 
-                        // Add the audio chunk to the buffer
-                        playbackBuffer.push(audioChunk);
-
-                        // Check if audio is currently playing
-                        if (!isPlaying) {
-                            // Start playing audio from the buffer
-                            playFromBuffer();
-                        }
-
-                        readAndPlay();
+                        const audioUrl = URL.createObjectURL(audioChunk);
+                                
+                        // Set the audio source URL and play
+                        audioPlayer.src = audioUrl;
+                        audioPlayer.playbackRate = 1.15;
+                    
+                        // Start playing audio
+                        audioPlayer.play();
                     });
 
 
@@ -209,18 +207,16 @@ async function sendAudioToServer() {
                                     // Convert the audio chunk to a Blob
                                     const audioChunk = new Blob([value], { type: 'audio/webm' });
 
-                                    // Add the audio chunk to the buffer
-                                    playbackBuffer.push(audioChunk);
-
-                                    // Check if audio is currently playing
-                                    if (!isPlaying) {
-                                        // Start playing audio from the buffer
-                                        playFromBuffer();
-                                    }
-
-                                    readAndPlay();
+                                    // Create a URL object from the audio Blob
+                                    const audioUrl = URL.createObjectURL(audioChunk);
+                                
+                                    // Set the audio source URL and play
+                                    audioPlayer.src = audioUrl;
+                                    audioPlayer.playbackRate = 1.15;
+                                
+                                    // Start playing audio
+                                    audioPlayer.play();
                                 });
-
 
                             }
 
@@ -249,34 +245,6 @@ async function sendAudioToServer() {
 // --------------------------- Helpers ------------------------------
 
 
-function playFromBuffer() {
-    // Check if buffer is empty
-    if (playbackBuffer.length === 0) {
-        // No more chunks in the buffer, stop playing
-        isPlaying = false;
-        return;
-    }
-
-    // Get the next audio chunk from the buffer
-    const audioChunk = playbackBuffer.shift();
-
-    // Create a URL object from the audio Blob
-    const audioUrl = URL.createObjectURL(audioChunk);
-
-    // Set the audio source URL and play
-    audioPlayer.src = audioUrl;
-    audioPlayer.playbackRate = 1.15;
-
-    // Start playing audio
-    audioPlayer.play();
-    isPlaying = true;
-
-    // Listen for the 'ended' event to know when the audio has finished playing
-    audioPlayer.addEventListener('ended', () => {
-        // Continue playing from the buffer
-        playFromBuffer();
-    });
-}
 
 function analyzeAudioForSilence(stream) {
     const audioContext = new AudioContext();

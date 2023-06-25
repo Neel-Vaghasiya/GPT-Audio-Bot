@@ -15,9 +15,7 @@ router.post('/generate-transcribe', audioConverter, async (req, res) => {
         const audioData = req.file.buffer;
         const audioQueryPath = './audio_query.wav';
 
-        console.log("before saving audio");
         writeFileSync(audioQueryPath, audioData);
-        console.log("audio saved at, ", audioQueryPath);
 
         // Transcribe audio using OpenAI Whisper API
         const transcriptionResponse = await convertIntoText(audioQueryPath); 
@@ -53,18 +51,18 @@ router.get('/receive-response', async (req, res) => {
                 'Content-Type': 'audio/wav',
             });
 
-            for (const audio of audioBase64s) {
-                const audioChunk = Buffer.from(audio.base64, 'base64');
-                res.write(audioChunk);
-            }
+            // Concatenate the audio chunks into a single audio file
+            const concatenatedAudio = audioBase64s.map(audio => Buffer.from(audio.base64, 'base64'));
+            const mergedAudio = Buffer.concat(concatenatedAudio);
 
+            res.write(mergedAudio);
             res.end();
         }
         else {
             res.status(400).json({error: "No input received"});
         }
     }
-    catch {
+    catch(error) {
         if(error.response && error.response.status===429)
             res.status(error.response.status).json({ error: 'Limit Reached' });
         else 
@@ -87,10 +85,11 @@ router.post('/', async (req, res) => {
                 'Content-Type': 'audio/wav',
             });
 
-            for (const audio of audioBase64s) {
-                const audioChunk = Buffer.from(audio.base64, 'base64');
-                res.write(audioChunk);
-            }
+            // Concatenate the audio chunks into a single audio file
+            const concatenatedAudio = audioBase64s.map(audio => Buffer.from(audio.base64, 'base64'));
+            const mergedAudio = Buffer.concat(concatenatedAudio);
+
+            res.write(mergedAudio);
 
             res.end();
         }

@@ -8,7 +8,7 @@ export const getTextResponse = async (query)=>{
         model: "text-davinci-003",
         prompt: query,
         temperature: 0,
-        max_tokens: 500
+        max_tokens: 250
     });
 }
 
