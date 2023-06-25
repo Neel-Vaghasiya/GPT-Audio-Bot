@@ -57,10 +57,10 @@ function startRecongnizing(event) {
     }
 }
 
-
+let finished = false;
 // Send Converted text to server
 async function sendTextToServer(query) {
-    fetch('http://192.168.29.105:3000/api/process-query/', {
+    fetch('https://gpt-audio-bot.onrender.com/api/process-query/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -75,12 +75,14 @@ async function sendTextToServer(query) {
 
                 // Create a new ReadableStreamReader
                 const reader = stream.getReader();
+                
 
                 async function readAndPlay() {
                     reader.read().then(({ done, value }) => {
 
                         // Check if all audio chunks have been read
                         if (done) {
+                            finished = true;
                             return;
                         }
 
@@ -96,8 +98,8 @@ async function sendTextToServer(query) {
                         // Start playing audio
                         audioPlayer.play();
                     });
-
-
+                    if(!finished)
+                        readAndPlay();
                 }
 
                 // Start reading and playing audio chunks
@@ -174,7 +176,7 @@ function startRecording(event) {
 
 
 async function sendAudioToServer() {
-    fetch('http://192.168.29.105:3000/api/process-query/generate-transcribe', {
+    fetch('https://gpt-audio-bot.onrender.com/api/process-query/generate-transcribe', {
         method: 'POST',
         body: formData
     })
@@ -184,7 +186,7 @@ async function sendAudioToServer() {
         .then(data => {
             if (data.transcript) {
                 spokenText.innerText = data.transcript;
-                fetch('http://192.168.29.105:3000/api/process-query/receive-response', {
+                fetch('https://gpt-audio-bot.onrender.com/api/process-query/receive-response', {
                     method: 'GET'
                 })
                     .then(response => {
@@ -217,6 +219,8 @@ async function sendAudioToServer() {
                                     // Start playing audio
                                     audioPlayer.play();
                                 });
+
+                                readAndPlay();
 
                             }
 
