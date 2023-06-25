@@ -14,7 +14,7 @@ export const getTextResponse = async (query)=>{
 
 export const convertIntoAudio = async (speech)=>{
     return getAllAudioBase64(speech, {
-        lang: 'en',
+        lang: 'hi',
         slow: false,
         host: 'https://translate.google.com',
     });
