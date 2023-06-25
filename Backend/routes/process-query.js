@@ -13,9 +13,11 @@ router.post('/generate-transcribe', audioConverter, async (req, res) => {
     try {
         // Save uploaded audio data to a temporary file
         const audioData = req.file.buffer;
-        const audioQueryPath = './Temp/audio_query.wav';
+        const audioQueryPath = './audio_query.wav';
 
+        console.log("before saving audio");
         writeFileSync(audioQueryPath, audioData);
+        console.log("audio saved at, ", audioQueryPath);
 
         // Transcribe audio using OpenAI Whisper API
         const transcriptionResponse = await convertIntoText(audioQueryPath); 
