@@ -9,8 +9,6 @@ const audioPlayer = document.getElementById('audioPlayer');
 let recognition;
 let query = "";
 let isRecognitionSupported = false;
-let isPlaying = false;
-let playbackBuffer = [];
 let firefoxAgent = navigator.userAgent.indexOf("Firefox") > -1;
 
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
@@ -44,8 +42,6 @@ recognition.addEventListener('end', () => {
 // On Microphone click
 function startRecongnizing(event) {
     audioPlayer.src = '';
-    isPlaying = false;
-    playbackBuffer = [];
     query = '';
 
     if (isRecognitionSupported) {
@@ -57,7 +53,7 @@ function startRecongnizing(event) {
     }
 }
 
-let finished = false;
+
 // Send Converted text to server
 async function sendTextToServer(query) {
     fetch('https://gpt-audio-bot.onrender.com/api/process-query/', {
@@ -70,40 +66,14 @@ async function sendTextToServer(query) {
         .then(response => {
             // Create a ReadableStream from the response
             if (response.status === 200) {
-                // Create a ReadableStream from the response
-                const stream = response.body;
-
-                // Create a new ReadableStreamReader
-                const reader = stream.getReader();
-                
-
-                async function readAndPlay() {
-                    reader.read().then(({ done, value }) => {
-
-                        // Check if all audio chunks have been read
-                        if (done) {
-                            finished = true;
-                            return;
-                        }
-
-                        // Convert the audio chunk to a Blob
-                        const audioChunk = new Blob([value], { type: 'audio/webm' });
-
-                        const audioUrl = URL.createObjectURL(audioChunk);
-                                
-                        // Set the audio source URL and play
-                        audioPlayer.src = audioUrl;
-                        audioPlayer.playbackRate = 1.15;
-                    
-                        // Start playing audio
-                        audioPlayer.play();
-                    });
-                    if(!finished)
-                        readAndPlay();
-                }
-
-                // Start reading and playing audio chunks
-                readAndPlay();
+                response.arrayBuffer()
+                .then(arrayBuffer => {
+                    const blob = new Blob([arrayBuffer], { type: 'audio/wav' });
+                    const audioUrl = URL.createObjectURL(blob);
+                    audioPlayer.src = audioUrl;
+                    audioPlayer.playbackRate = 1.15;
+                    audioPlayer.play();
+                })
             }
             else {
                 response.json()
@@ -192,40 +162,14 @@ async function sendAudioToServer() {
                     .then(response => {
 
                         if (response.status === 200) {
-                            // Create a ReadableStream from the response
-                            const stream = response.body;
-
-                            // Create a new ReadableStreamReader
-                            const reader = stream.getReader();
-
-                            async function readAndPlay() {
-                                reader.read().then(({ done, value }) => {
-
-                                    // Check if all audio chunks have been read
-                                    if (done) {
-                                        return;
-                                    }
-
-                                    // Convert the audio chunk to a Blob
-                                    const audioChunk = new Blob([value], { type: 'audio/webm' });
-
-                                    // Create a URL object from the audio Blob
-                                    const audioUrl = URL.createObjectURL(audioChunk);
-                                
-                                    // Set the audio source URL and play
-                                    audioPlayer.src = audioUrl;
-                                    audioPlayer.playbackRate = 1.15;
-                                
-                                    // Start playing audio
-                                    audioPlayer.play();
-                                });
-
-                                readAndPlay();
-
-                            }
-
-                            // Start reading and playing audio chunks
-                            readAndPlay();
+                            response.arrayBuffer()
+                            .then(arrayBuffer => {
+                                const blob = new Blob([arrayBuffer], { type: 'audio/wav' });
+                                const audioUrl = URL.createObjectURL(blob);
+                                audioPlayer.src = audioUrl;
+                                audioPlayer.playbackRate = 1.15;
+                                audioPlayer.play();
+                            })
                         }
                         else {
                             response.json()
