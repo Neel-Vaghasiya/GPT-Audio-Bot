@@ -8,13 +8,13 @@ export const getTextResponse = async (query)=>{
         model: "text-davinci-003",
         prompt: query,
         temperature: 0,
-        max_tokens: 200
+        max_tokens: 150
     });
 }
 
 export const convertIntoAudio = async (speech)=>{
     return getAllAudioBase64(speech, {
-        lang: 'hi',
+        lang: 'en',
         slow: false,
         host: 'https://translate.google.com',
     });
