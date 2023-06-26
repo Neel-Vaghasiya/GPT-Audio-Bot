@@ -56,7 +56,7 @@ function startRecongnizing(event) {
 
 // Send Converted text to server
 async function sendTextToServer(query) {
-    fetch('https://gpt-audio-bot.onrender.com/api/process-query/', {
+    fetch('https://rich-plum-trout-robe.cyclic.app/api/process-query/', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -146,7 +146,7 @@ function startRecording(event) {
 
 
 async function sendAudioToServer() {
-    fetch('https://gpt-audio-bot.onrender.com/api/process-query/generate-transcribe', {
+    fetch('https://rich-plum-trout-robe.cyclic.app/api/process-query/generate-transcribe', {
         method: 'POST',
         body: formData
     })
@@ -156,7 +156,7 @@ async function sendAudioToServer() {
         .then(data => {
             if (data.transcript) {
                 spokenText.innerText = data.transcript;
-                fetch('https://gpt-audio-bot.onrender.com/api/process-query/receive-response', {
+                fetch('https://rich-plum-trout-robe.cyclic.app/api/process-query/receive-response', {
                     method: 'GET'
                 })
                     .then(response => {
