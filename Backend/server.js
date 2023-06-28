@@ -9,7 +9,9 @@ const app = express();
 
 // For using environment variable
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://aimentor.netlify.app/', 'http://127.0.0.1:5500/', 'http://127.0.0.1:5500', 'https://aimentor.netlify.app']
+}));
 app.use(json());
 
 // Route
